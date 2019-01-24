@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rooms>
+	<room id="#GameStart">
+		<type>Room</type>
+		<choices>
+			<choice next="GotoA">Goto A</choice>
+			<choice next="GotoB">Goto B</choice>
+			<choice next="#GameOver">Exit game</choice>
+		</choices>
+		<description>You are the starting point</description>
+	</room>
+	<room id="GotoA">
+		<type>Room</type>
+		<choices>
+			<choice next="#GameStart">Goto to start</choice>
+			<choice next="GotoB">Goto B</choice>
+		</choices>
+		<description>You are now in A</description>
+	</room>
+	<room id="GotoB">
+		<type>Room</type>
+		<choices>
+			<choice next="#GameStart">Goto to start</choice>
+			<choice next="GotoA">Goto A</choice>
+		</choices>
+		<description>You are now in B</description>
+	</room>
+</rooms>

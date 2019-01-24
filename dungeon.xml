@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rooms>
+	<room id="#GameStart">
+		<type>Room</type>
+		<choices>
+			<choice next="DungeonGateDoor">Enter the dungeon</choice>
+			<choice next="#GameOver">Run away like a coward</choice>
+		</choices>
+		<description>You are facing the Dungeon gate. What do you want to do now ?</description>
+	</room>
+	<room id="DungeonGateDoor">
+		<type>Room</type>
+		<choices>
+			<choice next="LeftGarden">Turn left and explore the left part of the garden</choice>
+			<choice next="RightGarden">Turn right and explore the right part of the garden</choice>
+			<choice next="#GameOver">Exit from the gate and run away (you are still a coward but less)</choice>
+		</choices>
+		<description>You are now standing in the garden in front of the Dungeon. What do you want to do next?</description>
+	</room>
+	<room id="LeftGarden">
+		<type>Room</type>
+		<choices>
+			<choice next="DungeonGateDoor">Return to the gate</choice>
+		</choices>
+		<description>You are facing a dark water pond. What do you plan to do now ?</description>
+	</room>
+	<room id="RightGarden">
+		<type>Room</type>
+		<choices>
+			<choice next="DungeonGateDoor">Return to the gate</choice>
+		</choices>
+		<description>You arrive in a large area of herb in front of you begin a boxwood labyrinth but it is closed by a "Do not enter" sing.</description>
+	</room>
+</rooms>
