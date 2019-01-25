@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*
 import xml.etree.ElementTree as ET
 import sys
+import random
 
 class BookHeroEngine:
     def __init__(self, gameFile):
-        self.version = "0.0.1"
+        self.version = "0.0.2"
         self.gameFile = gameFile 
         self.engineRunning = True
         self.curRoom = "#GameStart"
         self.engineName = "Python Book Hero Engine"
         self.engineAuthor = "David Montandon"
+        self.messages = Messages() 
+        self.roomID = ""
 
     def engineStartMessage(self):
         print("\n\n\n============================================")
@@ -33,11 +36,12 @@ class BookHeroEngine:
         choice = "" 
         self.engineStartMessage() 
         self.loadXMLTree() 
+        self.loadMessages()
 
         while(self.engineRunning):
             nextRoom = ""
             room = self.loadRoom(self.curRoom)
-            room.printTextRoom()
+            room.printTextRoom(self.messages.getRandomText("actionMove"))
 
             while(nextRoom == ""):
                 choice = room.getUserChoice()
@@ -54,19 +58,35 @@ class BookHeroEngine:
 
         self.engineStopMessage() 
 
+    def loadMessages(self):
+        for msg in self.root.findall("./messages/message"):
+            self.messages.add(msg.attrib["type"], msg.text)
+
     def loadRoom(self, roomName):
-        roomXML = self.root.find("./room[@id='" + roomName + "']")
-        room = Room(roomName)
-        for v in roomXML.iter(): 
-            if(v.tag == "choice"):
-                room.addChoice(v.text, v.attrib["next"])
-            elif (v.tag == "description"):
-                room.addDesc(v.text)
-            elif (v.tag == "type"):
-                room.addType(v.text)
-            
-        room.addDefaultChoices()
+        roomXML = self.root.find("./rooms/room[@id='" + roomName + "']")
+        room = Room(roomXML)                    
         return room
+
+class Messages:
+    def __init__(self):
+        self.messages = {'actionMove':[]}
+
+    def add(self, cat, text):
+        list = self.messages[cat]
+        list.append( text )
+        self.messages[cat] = list
+
+    def getRandomText(self, cat):
+        list = self.messages[cat]
+        n = random.randint(0, len(list) - 1)
+        return list[n]
+
+class BooleanFromString:
+    def getBoolean(v):
+        if(v == "true" or v == "True"):
+            return True
+        else:
+            return False
 
 class Choice:
     def __init__(self, code, text, next):
@@ -75,9 +95,38 @@ class Choice:
         self.code = code 
 
 class Room:
-    def __init__(self, name):
-        self.name = name 
+    def __init__(self, source):
         self.choices = [] 
+
+        self.initFromXML(source)
+
+        self.addDefaultChoices()
+
+    def initFromXML(self, xml):
+        self.id = xml.attrib["id"]
+
+        if 'name' in xml.attrib:     
+            self.name = xml.attrib["name"] 
+        else:
+            self.name = xml.attrib["id"] 
+
+        if 'type' in xml.attrib:     
+            self.type = xml.attrib["type"] 
+        else:
+            self.type = "Room" 
+
+        if 'randomActionMessage' in xml.attrib:   
+            self.randomActionMessage = BooleanFromString.getBoolean(xml.attrib["randomActionMessage"]) 
+        else:
+            self.randomActionMessage = True
+
+        for v in xml.iter(): 
+            if(v.tag == "choice"):
+                self.addChoice(v.text, v.attrib["next"])
+            elif (v.tag == "description"):
+                self.addDesc(v.text)
+            elif (v.tag == "type"):
+                self.addType(v.text)
         
     def info(self):
         print(self.name)
@@ -111,9 +160,11 @@ class Room:
                 return c.next
         return "" 
 
-    def printTextRoom(self):
+    def printTextRoom(self, actionMessage):
         print("\n\n\n============================================")
         self.printDesc()
+        if(self.randomActionMessage):
+            print(actionMessage)
         print("\n")
         self.printChoices()
         print("============================================")

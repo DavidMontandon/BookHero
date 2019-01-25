@@ -1,28 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rooms>
-	<room id="#GameStart">
-		<type>Room</type>
-		<choices>
-			<choice next="GotoA">Goto A</choice>
-			<choice next="GotoB">Goto B</choice>
-			<choice next="#GameOver">Exit game</choice>
-		</choices>
-		<description>You are the starting point</description>
-	</room>
-	<room id="GotoA">
-		<type>Room</type>
-		<choices>
-			<choice next="#GameStart">Goto to start</choice>
-			<choice next="GotoB">Goto B</choice>
-		</choices>
-		<description>You are now in A</description>
-	</room>
-	<room id="GotoB">
-		<type>Room</type>
-		<choices>
-			<choice next="#GameStart">Goto to start</choice>
-			<choice next="GotoA">Goto A</choice>
-		</choices>
-		<description>You are now in B</description>
-	</room>
-</rooms>
+<story>
+	<rooms>
+		<room id="#GameStart" type="Room" randomActionMessage="false">
+			<choices>
+				<choice next="GotoA">Goto A</choice>
+				<choice next="GotoB">Goto B</choice>
+				<choice next="#GameOver">Exit game</choice>
+			</choices>
+			<description>You are the starting point
+No random action message is shown, so what do you want to do?</description>
+		</room>
+		<room id="GotoA" type="Room">
+			<choices>
+				<choice next="#GameStart">Goto to start</choice>
+				<choice next="GotoB">Goto B</choice>
+			</choices>
+			<description>You are now in A</description>
+		</room>
+		<room id="GotoB" type="Room">
+			<choices>
+				<choice next="#GameStart">Goto to start</choice>
+				<choice next="GotoA">Goto A</choice>
+			</choices>
+			<description>You are now in B</description>
+		</room>
+	</rooms>
+	<messages>
+		<message type="actionMove">What do you want do now ?</message>
+		<message type="actionMove">Where do you want to go ?</message>
+		<message type="actionMove">What do you want to do next ?</message>
+		<message type="actionMove">Where do you plan to do now?</message>
+	</messages>
+</story>
