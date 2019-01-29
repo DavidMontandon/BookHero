@@ -1,38 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <story>
-	<rooms>
-		<room id="#GameStart" type="Room">
+	<screens>
+		<screen id="#GameStart" type="StoryBoard">
 			<choices>
 				<choice next="DungeonGateDoor">Enter the dungeon</choice>
 				<choice next="#GameOver">Run away like a coward</choice>
 			</choices>
 			<description>You are facing the Dungeon gate.</description>
-		</room>
-		<room id="DungeonGateDoor" type="Room">
+		</screen>
+		<screen id="DungeonGateDoor" type="StoryBoard">
 			<choices>
 				<choice next="LeftGarden">Turn left and explore the left part of the garden</choice>
 				<choice next="RightGarden">Turn right and explore the right part of the garden</choice>
 				<choice next="#GameOver">Exit from the gate and run away (you are still a coward but less)</choice>
 			</choices>
 			<description>You are now standing in the garden in front of the Dungeon.</description>
-		</room>
-		<room id="LeftGarden" type="Room">
+		</screen>
+		<screen id="LeftGarden" type="StoryBoard">
 			<choices>
 				<choice next="DungeonGateDoor">Return to the gate</choice>
 			</choices>
 			<description>You are facing a dark water pond.</description>
-		</room>
-		<room id="RightGarden" type="Room">
+		</screen>
+		<screen id="RightGarden" type="StoryBoard">
 			<choices>
 				<choice next="DungeonGateDoor">Return to the gate</choice>
 			</choices>
 			<description>You arrive in a large area of herb in front of you begin a boxwood labyrinth but it is closed by a "Do not enter" sing.</description>
-		</room>
-	</rooms>
+		</screen>
+	</screens>
+	<classes>
+		<class id="vanHelsing">
+			<name>Van Helsing</name>
+			<description>Decendant of the Van Helsing familly</description>
+			<initialize>
+				<maxHp>100</maxHp>
+			</initialize>
+		</class>
+		<class id="belmont">
+			<name>Van Helsing</name>
+			<description>Decendant of the Belmont familly</description>
+			<initialize>
+				<maxHp>100</maxHp>
+			</initialize>
+		</class>
+		<class id="priest" selectable="false">
+			<name>Paladin</name>
+			<description>Holy warrior</description>
+			<initialize>
+				<maxHp>120</maxHp>
+			</initialize>
+		</class>
+	</classes>
 	<messages>
 		<message type="actionMove">What do you want do now ?</message>
 		<message type="actionMove">Where do you want to go ?</message>
 		<message type="actionMove">What do you want to do next ?</message>
 		<message type="actionMove">Where do you plan to do now?</message>
 	</messages>
+	<configs>
+		<config type="GameStart">#GameStart</config>
+		<config type="VisitXP">1</config>
+	</configs>
 </story>

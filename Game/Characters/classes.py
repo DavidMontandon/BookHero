@@ -4,7 +4,7 @@ class ClassHolder:
     def __init__(self):
         self.classes = []
 
-    def initFromXML(self, xml):
+    def init_from_xml(self, xml):
         for data in xml:
             c = CharacterClass()
             c._init_from_xml(data)

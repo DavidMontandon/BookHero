@@ -1,32 +1,41 @@
 import xml.etree.ElementTree as ET
 from Game.Characters import characters
 from Game.Characters import classes 
-from Game.Core import room
 from Game.Util import util 
 from Game.Texts import messages
+from Game.Core import instance
+from Game.Screens import screnloader
 
 class BookHeroText:
     def __init__(self, game_file):
-        self.__version = "0.0.3"
+        self.__version = "0.0.4"
         self.__game_file = game_file 
         self.__engine_running = True
-        self.__cur_room = "#GameStart"
         self.__engine_name = "Python Book Hero Engine"
         self.__engine_author = "David Montandon"
         self.__messages = messages.Messages() 
-        self.__classes = classes.ClassHolder()
+        instance.Instance()
 
     def __engine_start_message(self):
-        print("\n\n\n============================================")
+        util.ClearConsole.clear()
+        print("\n\n")
+        print("=======================================================================================================================")
         print(self.__engine_name ,  self.__version , "by" , self.__engine_author , "- STARTED")
         if(self.__game_file=="sample.xml"):
             print("\nYou can also run you own StoryFile using the command line : python bookhero.py yourworld.xml")
-        print("============================================")
+        print("=======================================================================================================================\n\n")
+        print("For more informations, please visit : https://github.com/DavidMontandon/BookHero")
+        print("\n")
+        input("Press Enter to continue...")
 
     def __engine_stop_message(self):
-        print("\n\n\n============================================")
+        util.ClearConsole.clear()
+        print("\n\n")
+        print("=======================================================================================================================")
         print(self.__engine_name ,  self.__version , "by" , self.__engine_author , "- STOPPED")
-        print("============================================")
+        print("=======================================================================================================================\n\n")
+        print("For more informations, please visit : https://github.com/DavidMontandon/BookHero")
+        print("\n")
 
     def __load_xml_tree(self):
         with open(self.__game_file, "r") as xml_file:
@@ -35,41 +44,73 @@ class BookHeroText:
         self.root = self.tree.getroot()
 
     def engine_start(self):
-        choice = "" 
+        mem = instance.Instance.get_instance()
         self.__engine_start_message() 
         self.__load_xml_tree() 
         self.__load_messages()
         self.__load_classes()
+        self.__load_config()
+
+        self.__cur_room = mem.config_holder.get_config('GameStart')
 
         while(self.__engine_running):
-            next_room = ""
+            self.__next_room = ""
             room = self.__load_room(self.__cur_room)
-            room.print_text_room(self.__messages.getRandomText("actionMove"))
 
-            while(next_room == ""):
-                choice = room.get_user_choice()
-                next_room = room.check_choice(choice)
-                if( next_room == ""):
-                    print("Invalid choice.")
+            self.__screen_print( room )
 
-            if(next_room=="#Quit"):
+            if(self.__cur_room=="#Quit"):
                 self.__engine_running = False
-            elif(next_room=="#GameOver"):
+            elif(self.__cur_room=="#GameOver"):
                 self.__engine_running = False
-
-            self.__cur_room = next_room
 
         self.__engine_stop_message() 
 
+    def __screen_print(self, load_screen) :
+        mem = instance.Instance.get_instance() 
+        next_screen = ""
+        util.ClearConsole.clear()
+
+        print("=======================================================================================================================")
+        print(self.__engine_name ,  self.__version , "by" , self.__engine_author )
+        print("=======================================================================================================================\n")
+
+        print(load_screen.get_desc())
+
+        if(load_screen.has_random_message()):
+            print(self.__messages.getRandomText("actionMove"))
+
+        print("\n=======================================================================================================================\n")
+
+        for c in load_screen.get_choices():
+            print(c.code, " : ", c.text)
+
+        print("")
+
+        while(next_screen == ""):
+            choice = str(input("Enter your choice : ")).upper()
+            next_screen = load_screen.check_choice(choice)
+            if( next_screen == ""):
+                print("Invalid choice.")
+
+        mem.screens_holder.set_visited_screen(self.__cur_room)
+        self.__cur_room = next_screen
+
+    def __load_config(self):
+        mem = instance.Instance.get_instance()
+        mem.config_holder.init_from_xml(self.root.findall("./configs/config"))
+
     def __load_classes(self):
-        self.__classes.initFromXML(self.root.findall("./classes/class"))
+        mem = instance.Instance.get_instance()
+        mem.class_holder.init_from_xml(self.root.findall("./classes/class"))
 
     def __load_messages(self):
+        mem = instance.Instance.get_instance()
         for msg in self.root.findall("./messages/message"):
             self.__messages.add(msg.attrib["type"], msg.text)
+            mem.message_holder.add(msg.attrib["type"], msg.text)
 
     def __load_room(self, room_name):
-        room_xml = self.root.find("./rooms/room[@id='" + room_name + "']")
-        r = room.Room(room_xml)     
-        room.ScreenLoader.load_from_xml(room_xml)               
-        return r
+        room_xml = self.root.find("./screens/screen[@id='" + room_name + "']")
+        s = screnloader.ScreenLoader.load_from_xml(room_xml)       
+        return s

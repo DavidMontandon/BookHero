@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <story>
-	<rooms>
-		<room id="#GameStart" type="StoryBoard" randomActionMessage="false">
+	<screens>
+		<screen id="#GameStart" type="StoryBoard" randomActionMessage="false">
+			<xpVisit>0</xpVisit>
+			<randomActionMessage>false</randomActionMessage>
 			<choices>
 				<choice next="GotoA">Goto A</choice>
 				<choice next="GotoB">Goto B</choice>
@@ -10,30 +12,30 @@
 			</choices>
 			<description>You are the starting point
 No random action message is shown, so what do you want to do?</description>
-		</room>
-		<room id="ClassSelect" type="ClassSelector">
+		</screen>
+		<screen id="ClassSelect" type="ClassSelector">
 			<confirm>You fell more powerfull</confirm>
 			<choices>
 				<choice next="#GameStart">Goto to start</choice>
 				<choice next="GotoB">Goto B</choice>
 			</choices>
-			<description>You are now in A</description>
-		</room>
-		<room id="GotoA" type="StoryBoard">
+			<description>Choose your class</description>
+		</screen>
+		<screen id="GotoA" type="StoryBoard">
 			<choices>
 				<choice next="#GameStart">Goto to start</choice>
 				<choice next="GotoB">Goto B</choice>
 			</choices>
 			<description>You are now in A</description>
-		</room>
-		<room id="GotoB" type="StoryBoard">
+		</screen>
+		<screen id="GotoB" type="StoryBoard">
 			<choices>
 				<choice next="#GameStart">Goto to start</choice>
 				<choice next="GotoA">Goto A</choice>
 			</choices>
 			<description>You are now in B</description>
-		</room>
-	</rooms>
+		</screen>
+	</screens>
 	<messages>
 		<message type="actionMove">What do you want do now ?</message>
 		<message type="actionMove">Where do you want to go ?</message>
@@ -41,7 +43,18 @@ No random action message is shown, so what do you want to do?</description>
 		<message type="actionMove">Where do you plan to do now?</message>
 	</messages>
 	<classes>
-		<class name="A normal person" id="person"></class>
-		<class name="God" id="god" selectable="false"></class>
+		<class id="person">
+			<name>A normal person</name>
+			<initialize>
+				<maxHp>100</maxHp>
+			</initialize>
+		</class>
+		<class id="god" selectable="false">
+			<name>God</name>
+		</class>
 	</classes>
+	<configs>
+		<config type="GameStart">#GameStart</config>
+		<config type="VisitXP">1</config>
+	</configs>
 </story>
