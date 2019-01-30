@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <story>
 	<screens>
-		<screen id="#GameStart" type="StoryBoard" randomActionMessage="false">
+		<screen id="#GameStart" type="StoryBoard">
 			<xpVisit>0</xpVisit>
 			<randomActionMessage>false</randomActionMessage>
 			<choices>
 				<choice next="GotoA">Goto A</choice>
 				<choice next="GotoB">Goto B</choice>
-				<choice next="ClassSelect">Class Select</choice>
+				<choice next="ClassSelect" ifnot="flag:Class">Class Select</choice>
+				<choice next="ClassSelect" if="flag:Class">Change class</choice>
 				<choice next="#GameOver">Exit game</choice>
 			</choices>
 			<description>You are the starting point
 No random action message is shown, so what do you want to do?</description>
 		</screen>
 		<screen id="ClassSelect" type="ClassSelector">
+			<flag>Class</flag>
 			<confirm>You fell more powerfull</confirm>
 			<choices>
 				<choice next="#GameStart">Goto to start</choice>
@@ -39,8 +41,8 @@ No random action message is shown, so what do you want to do?</description>
 	<messages>
 		<message type="actionMove">What do you want do now ?</message>
 		<message type="actionMove">Where do you want to go ?</message>
-		<message type="actionMove">What do you want to do next ?</message>
-		<message type="actionMove">Where do you plan to do now?</message>
+		<message type="actionMove">What do you plan to do next ?</message>
+		<message type="actionMove">Where do you plan to go now?</message>
 	</messages>
 	<classes>
 		<class id="person">

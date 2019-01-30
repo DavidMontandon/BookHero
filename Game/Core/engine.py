@@ -8,7 +8,7 @@ from Game.Screens import screnloader
 
 class BookHeroText:
     def __init__(self, game_file):
-        self.__version = "0.0.4"
+        self.__version = "0.0.5"
         self.__game_file = game_file 
         self.__engine_running = True
         self.__engine_name = "Python Book Hero Engine"
@@ -17,7 +17,7 @@ class BookHeroText:
         instance.Instance()
 
     def __engine_start_message(self):
-        util.ClearConsole.clear()
+        util.Console.clear()
         print("\n\n")
         print("=======================================================================================================================")
         print(self.__engine_name ,  self.__version , "by" , self.__engine_author , "- STARTED")
@@ -29,7 +29,7 @@ class BookHeroText:
         input("Press Enter to continue...")
 
     def __engine_stop_message(self):
-        util.ClearConsole.clear()
+        util.Console.clear()
         print("\n\n")
         print("=======================================================================================================================")
         print(self.__engine_name ,  self.__version , "by" , self.__engine_author , "- STOPPED")
@@ -69,16 +69,18 @@ class BookHeroText:
     def __screen_print(self, load_screen) :
         mem = instance.Instance.get_instance() 
         next_screen = ""
-        util.ClearConsole.clear()
+        util.Console.clear()
 
         print("=======================================================================================================================")
         print(self.__engine_name ,  self.__version , "by" , self.__engine_author )
         print("=======================================================================================================================\n")
 
-        print(load_screen.get_desc())
+        util.Console.center(load_screen.get_desc())
 
         if(load_screen.has_random_message()):
-            print(self.__messages.getRandomText("actionMove"))
+            print("")
+            util.Console.center(self.__messages.getRandomText("actionMove"))
+            #print(self.__messages.getRandomText("actionMove"))
 
         print("\n=======================================================================================================================\n")
 
