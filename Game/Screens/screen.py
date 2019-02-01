@@ -11,11 +11,11 @@ class Screen:
     def _load_xml(self, xml):
         from Game.Core import instance
         mem = instance.Instance.get_instance() 
+
         self._id = xml.attrib["id"]
 
         for v in xml.iter(): 
             if(v.tag == "choice"):
-                
                 if("ifnot" in v.attrib):
                     if not mem.check_if_not(v.attrib["ifnot"]):
                         continue
@@ -58,8 +58,11 @@ class Screen:
     def check_choice(self, choice):
         for c in self._choices:
             if( str(choice) == c.code ):
-                return c.next
-        return "" 
+                return c.get_screen_map()
+                
+        m = {}
+        m["next"] = ""
+        return m
 
 
 

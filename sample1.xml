@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<story>
+	<screens>
+		<screen id="sample1" type="StoryBoard">
+			<choices>
+				<choice next="sample.xml:#GameStart">Goto to start in sample.xml</choice>
+				<choice next="sample2">Goto to sample2 in this file</choice>
+			</choices>
+			<description>You are now in a new XML file</description>
+		</screen>
+		<screen id="sample2" type="StoryBoard">
+			<choices>
+				<choice next="sample1">Goto to sample1 in this file</choice>
+			</choices>
+			<description>You are now in a new XML file</description>
+		</screen>
+	</screens>
+</story>

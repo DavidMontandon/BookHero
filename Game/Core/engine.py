@@ -37,8 +37,12 @@ class BookHeroText:
         print("For more informations, please visit : https://github.com/DavidMontandon/BookHero")
         print("\n")
 
-    def __load_xml_tree(self):
-        with open(self.__game_file, "r") as xml_file:
+    def __load_xml_tree(self, file=None):
+                
+        if(file == None):
+            file = self.__game_file
+
+        with open(file, "r") as xml_file:
             self.tree = ET.parse(xml_file)
         
         self.root = self.tree.getroot()
@@ -80,7 +84,6 @@ class BookHeroText:
         if(load_screen.has_random_message()):
             print("")
             util.Console.center(self.__messages.getRandomText("actionMove"))
-            #print(self.__messages.getRandomText("actionMove"))
 
         print("\n=======================================================================================================================\n")
 
@@ -91,12 +94,18 @@ class BookHeroText:
 
         while(next_screen == ""):
             choice = str(input("Enter your choice : ")).upper()
-            next_screen = load_screen.check_choice(choice)
+            m = load_screen.check_choice(choice)
+            next_screen = m["next"]
             if( next_screen == ""):
                 print("Invalid choice.")
 
         mem.screens_holder.set_visited_screen(self.__cur_room)
+
+        if not m["file"]is None:
+            self.__load_xml_tree(m["file"])
+
         self.__cur_room = next_screen
+
 
     def __load_config(self):
         mem = instance.Instance.get_instance()

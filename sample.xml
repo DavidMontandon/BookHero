@@ -7,7 +7,8 @@
 			<choices>
 				<choice next="GotoA">Goto A</choice>
 				<choice next="GotoB">Goto B</choice>
-				<choice next="ClassSelect" ifnot="flag:Class">Class Select</choice>
+				<choice next="sample1.xml:sample1">Go to sample1 in sample1.xml</choice>
+				<choice next="ClassSelect" ifnot="flag:Class">Class Select </choice>
 				<choice next="ClassSelect" if="flag:Class">Change class</choice>
 				<choice next="#GameOver">Exit game</choice>
 			</choices>
