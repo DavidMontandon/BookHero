@@ -16,8 +16,7 @@
 No random action message is shown, so what do you want to do?</description>
 		</screen>
 		<screen id="ClassSelect" type="ClassSelector">
-			<flag>Class</flag>
-			<confirm>You fell more powerfull</confirm>
+			<confirm>You feel more powerful</confirm>
 			<choices>
 				<choice next="#GameStart">Goto to start</choice>
 				<choice next="GotoB">Goto B</choice>
@@ -48,12 +47,17 @@ No random action message is shown, so what do you want to do?</description>
 	<classes>
 		<class id="person">
 			<name>A normal person</name>
+			<description>Holy warrior</description>
 			<initialize>
-				<maxHp>100</maxHp>
+				<hp>100</hp>
 			</initialize>
 		</class>
 		<class id="god" selectable="false">
 			<name>God</name>
+			<description>An unselectable powerful</description>
+			<initialize>
+				<hp>100</hp>
+			</initialize>
 		</class>
 	</classes>
 	<configs>

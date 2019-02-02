@@ -8,7 +8,7 @@ from Game.Screens import screnloader
 
 class BookHeroText:
     def __init__(self, game_file):
-        self.__version = "0.0.5"
+        self.__version = "0.0.6"
         self.__game_file = game_file 
         self.__engine_running = True
         self.__engine_name = "Python Book Hero Engine"
@@ -70,42 +70,25 @@ class BookHeroText:
 
         self.__engine_stop_message() 
 
-    def __screen_print(self, load_screen) :
+
+    def __screen_print(self, load_screen):
         mem = instance.Instance.get_instance() 
-        next_screen = ""
         util.Console.clear()
 
         print("=======================================================================================================================")
         print(self.__engine_name ,  self.__version , "by" , self.__engine_author )
         print("=======================================================================================================================\n")
 
-        util.Console.center(load_screen.get_desc())
+        m = load_screen.print_text(self.__messages.getRandomText("actionMove"))
 
-        if(load_screen.has_random_message()):
-            print("")
-            util.Console.center(self.__messages.getRandomText("actionMove"))
-
-        print("\n=======================================================================================================================\n")
-
-        for c in load_screen.get_choices():
-            print(c.code, " : ", c.text)
-
-        print("")
-
-        while(next_screen == ""):
-            choice = str(input("Enter your choice : ")).upper()
-            m = load_screen.check_choice(choice)
-            next_screen = m["next"]
-            if( next_screen == ""):
-                print("Invalid choice.")
+        next_screen = m["next"]
 
         mem.screens_holder.set_visited_screen(self.__cur_room)
-
+        
         if not m["file"]is None:
             self.__load_xml_tree(m["file"])
 
         self.__cur_room = next_screen
-
 
     def __load_config(self):
         mem = instance.Instance.get_instance()

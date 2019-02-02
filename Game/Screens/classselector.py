@@ -6,7 +6,7 @@ class ClassSelectorScreen(screen.Screen):
         screen.Screen.__init__(self)
 
     def load_xml(self, xml):
-        screen.Screen._load_xml(self, xml)
+        screen.Screen._Screen__load_xml(self, xml)
         self._add_default_choices()
 
     def _add_default_choices(self):
