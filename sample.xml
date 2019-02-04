@@ -9,19 +9,30 @@
 				<choice next="GotoB">Goto B</choice>
 				<choice next="sample1.xml:sample1">Go to sample1 in sample1.xml</choice>
 				<choice next="ClassSelect" ifnot="flag:Class">Class Select </choice>
-				<choice next="ClassSelect" if="flag:Class">Change class</choice>
+				<choice next="ClassChange" if="flag:Class">Change class</choice>
 				<choice next="#GameOver">Exit game</choice>
 			</choices>
 			<description>You are the starting point
 No random action message is shown, so what do you want to do?</description>
 		</screen>
-		<screen id="ClassSelect" type="ClassSelector">
-			<confirm>You feel more powerful</confirm>
+		<screen id="ClassSelect" type="ClassSelector" characterId="Hero">
+			<flag>Class</flag>
+			<xpVisit>0</xpVisit>
+			<confirm>You feel more powerful.</confirm>
+			<description>Choose your class</description>
 			<choices>
 				<choice next="#GameStart">Goto to start</choice>
-				<choice next="GotoB">Goto B</choice>
+				<choice next="GotoA">Goto A</choice>
 			</choices>
-			<description>Choose your class</description>
+		</screen>
+		<screen id="ClassChange" type="ClassSelector" characterId="Hero">
+			<xpVisit>0</xpVisit>
+			<confirm>You feel more powerful.</confirm>
+			<description>You want to change class again. Make your choice.</description>
+			<choices>
+				<choice next="#GameStart">Goto to start</choice>
+				<choice next="GotoA">Goto A</choice>
+			</choices>
 		</screen>
 		<screen id="GotoA" type="StoryBoard">
 			<choices>
@@ -29,6 +40,13 @@ No random action message is shown, so what do you want to do?</description>
 				<choice next="GotoB">Goto B</choice>
 			</choices>
 			<description>You are now in A</description>
+		</screen>
+		<screen id="GetSword" type="StoryBoard">
+			<choices>
+				<choice next="#GameStart">Goto to start</choice>
+				<choice next="GotoB">Goto B</choice>
+			</choices>
+			<description>You found a sword</description>
 		</screen>
 		<screen id="GotoB" type="StoryBoard">
 			<choices>
@@ -43,24 +61,74 @@ No random action message is shown, so what do you want to do?</description>
 		<message type="actionMove">Where do you want to go ?</message>
 		<message type="actionMove">What do you plan to do next ?</message>
 		<message type="actionMove">Where do you plan to go now?</message>
+		<message type="actionSelectClass">Who do you want be ?</message>
+		<message type="actionSelectClass">Who are you ?</message>
 	</messages>
 	<classes>
-		<class id="person">
-			<name>A normal person</name>
+		<class id="paladin">
+			<name>Paladin</name>
 			<description>Holy warrior</description>
 			<initialize>
-				<hp>100</hp>
+				<hp>
+					<value>100</value>
+				</hp>
+				<dex>
+					<value>40</value>
+					<dice>1D6</dice>
+				</dex>
+				<str>
+					<value>40</value>
+					<dice>2D6</dice>
+				</str>
+				<wis>
+					<value>30</value>
+					<dice>1D6</dice>
+				</wis>
+			</initialize>
+		</class>
+		<class id="pilgrim">
+			<name>Pilgrim</name>
+			<description>A fervent prayer</description>
+			<initialize>
+				<hp>
+					<value>50</value>
+				</hp>
+				<dex>
+					<value>30</value>
+					<dice>1D6</dice>
+				</dex>
+				<str>
+					<value>30</value>
+					<dice>1D6</dice>
+				</str>
+				<wis>
+					<value>60</value>
+					<dice>2D6</dice>
+				</wis>
 			</initialize>
 		</class>
 		<class id="god" selectable="false">
 			<name>God</name>
-			<description>An unselectable powerful</description>
+			<description>An unselectable powerful class</description>
 			<initialize>
-				<hp>100</hp>
+				<hp>
+					<value>100</value>
+				</hp>
+				<dex>
+					<value>100</value>
+				</dex>
+				<str>
+					<value>100</value>
+				</str>
+				<wis>
+					<value>100</value>
+				</wis>
 			</initialize>
 		</class>
 	</classes>
 	<configs>
+		<config type="MainParty">Party</config>
+		<config type="MainCharacter">Hero</config>
 		<config type="GameStart">#GameStart</config>
 		<config type="VisitXP">1</config>
 	</configs>

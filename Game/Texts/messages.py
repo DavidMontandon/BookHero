@@ -2,11 +2,11 @@ import random
 
 class Messages:
     def __init__(self):
-        self.messages = {'actionMove':[]}
+        self.messages = {'actionMove':[],'actionSelectClass':[]}
 
     def add(self, cat, text):
         list = self.messages[cat]
-        list.append( text )
+        list.append(text)
         self.messages[cat] = list
 
     def getRandomText(self, cat):

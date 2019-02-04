@@ -1,5 +1,5 @@
-from Game.Screens import storyboard as SB
-from Game.Screens import classselector as CS
+from Game.Screens import storyboard
+from Game.Screens import classselector
 
 class ScreenLoader:
     @staticmethod
@@ -8,9 +8,9 @@ class ScreenLoader:
         screen_type = xml.attrib["type"]
 
         if(screen_type == "StoryBoard"):
-            s = SB.StoryBoardScreen()
+            s = storyboard.StoryBoardScreen()
         elif(screen_type == "ClassSelector"):
-            s = CS.ClassSelectorScreen()
+            s = classselector.ClassSelectorScreen()
         
         if (s != None):
             s.load_xml(xml)

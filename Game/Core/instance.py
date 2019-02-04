@@ -7,7 +7,7 @@ from Game.Core import flag
 
 class Instance:
     __instance = None
-    character_holder = characters.CharacterHolder() 
+    __character_holder = characters.CharacterHolder() 
     class_holder = classes.ClassHolder()
     message_holder = messages.Messages() 
     screens_holder = visit.VisitedScreenHolder()  
@@ -49,4 +49,19 @@ class Instance:
     @staticmethod
     def check_if_not(text):
         return not Instance.check_if(text)
+
+    @staticmethod
+    def add_character_to_party(party_id, character_id):
+        Instance.__character_holder.add_character_to_party(party_id, character_id)
+
+    @staticmethod
+    def add_party(party_id):
+        Instance.__character_holder.add_party(party_id, party_id)
     
+    @staticmethod
+    def add_character(character_id):
+        Instance.__character_holder.add_character(character_id)
+
+    @staticmethod
+    def set_class(character_id, class_id):
+        Instance.__character_holder.set_character_class(character_id, class_id)

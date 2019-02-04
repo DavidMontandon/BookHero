@@ -34,14 +34,16 @@ class Screen:
             elif (v.tag == "flag"):
                 mem.add_flag( v.text )
 
-    def print_text(self, msg):
+    def print_text(self):
         from Game.Core import instance 
         util.Console.center(self.get_desc())
         next_screen = ""
 
         if(self.has_random_message()):
             print("")
-            util.Console.center(msg)
+            from Game.Core import instance
+            mem = instance.Instance.get_instance() 
+            util.Console.center(mem.message_holder.getRandomText("actionMove"))
 
         print("\n=======================================================================================================================\n")
 

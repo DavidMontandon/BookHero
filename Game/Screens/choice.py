@@ -17,5 +17,15 @@ class Choice:
         self.text = text
         self.code = code
 
+
+    def get_continue(self):
+        return self.next
+
+    def get_text(self):
+        return self.text
+
+    def get_code(self):
+        return self.code
+
     def get_screen_map(self):
         return self.__screen_map
