@@ -7,7 +7,7 @@ from Game.Screens import screnloader
 
 class BookHeroText:
     def __init__(self, game_file):
-        self.__version = "0.0.7"
+        self.__version = "0.0.8"
         self.__game_file = game_file 
         self.__engine_running = True
         self.__engine_name = "Python Book Hero Engine"

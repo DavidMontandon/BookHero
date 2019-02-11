@@ -3,6 +3,10 @@ class CharacterHolder:
         self.__characters = {}
         self.__party = {}
 
+    def get_character(self, character_id):
+        c = self.__characters[character_id]
+        return c
+
     def add_party(self, party_id, party_name):
         self.__party[party_id] = Party(party_id, party_name)
 
@@ -44,6 +48,9 @@ class Character:
         self.__level = 0
         self.__xp = 0
         self.__alive = True
+
+    def get_class(self):
+        return self.__class_id
 
     def set_class(self, class_id):
         self.__class_id = class_id

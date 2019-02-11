@@ -13,6 +13,12 @@ class ClassHolder:
 
         return l
 
+    def get_class(self, class_id):
+        for c in self.classes:
+            if(c.id == class_id):
+                return c
+        return None
+
     def get_classes(self):
         return self.classes
 
@@ -21,7 +27,6 @@ class ClassHolder:
             c = CharacterClass()
             c._init_from_xml(data)
             self.classes.append(c)
-
 
 class Skill:
     def __init__(self, name, value, dice=None):
@@ -34,7 +39,6 @@ class Skill:
 
     def get_dice(self):
         return self.__dice 
-
 
 class CharacterClass:
     def __init__(self):
@@ -78,3 +82,6 @@ class CharacterClass:
 
         if name is not None:
             self.__skills[name] = Skill(name, value, dice)
+
+    def get_name(self):
+        return self.name

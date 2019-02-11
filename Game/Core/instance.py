@@ -65,3 +65,12 @@ class Instance:
     @staticmethod
     def set_class(character_id, class_id):
         Instance.__character_holder.set_character_class(character_id, class_id)
+
+    @staticmethod
+    def get_class(class_id):
+        return Instance.class_holder.get_class(class_id)
+
+    @staticmethod
+    def get_character(character_id):
+        return Instance.__character_holder.get_character(character_id)
+

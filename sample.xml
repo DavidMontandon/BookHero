@@ -18,7 +18,7 @@ No random action message is shown, so what do you want to do?</description>
 		<screen id="ClassSelect" type="ClassSelector" characterId="Hero">
 			<flag>Class</flag>
 			<xpVisit>0</xpVisit>
-			<confirm>You feel more powerful.</confirm>
+			<confirm>You feel more powerful {{Character.Hero.Class.Name}}.</confirm>
 			<description>Choose your class</description>
 			<choices>
 				<choice next="#GameStart">Goto to start</choice>

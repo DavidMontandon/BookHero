@@ -1,6 +1,7 @@
 from Game.Screens import screen
 from Game.Screens import choice
 from Game.Util import util 
+from Game.Texts import transform
 
 class ClassSelectorScreen(screen.Screen):
     def __init__(self):
@@ -79,7 +80,7 @@ class ClassSelectorScreen(screen.Screen):
 
         mem.set_class(self.__character_id, selected_class)
         print("\n=======================================================================================================================\n")
-        util.Console.center(self.__confirm)
+        util.Console.center( transform.Transform.get_transformated_text(self.__confirm ))
         print("\n=======================================================================================================================\n")
 
         for c in self.get_choices():
