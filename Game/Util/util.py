@@ -14,7 +14,7 @@ class Console:
     def clear():
         import os
         import platform
-        
+
         if(platform.system()=="Windows"):
             os.system('cls')
         elif(platform.system()=="Linux"):

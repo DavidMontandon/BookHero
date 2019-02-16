@@ -11,6 +11,8 @@ class ScreenLoader:
             s = storyboard.StoryBoardScreen()
         elif(screen_type == "ClassSelector"):
             s = classselector.ClassSelectorScreen()
+        elif(screen_type == "Character"):
+            s = storyboard.StoryBoardScreen()
         
         if (s != None):
             s.load_xml(xml)

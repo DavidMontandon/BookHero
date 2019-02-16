@@ -4,15 +4,17 @@ from Game.Texts import messages
 from Game.Core import config
 from Game.Screens import visit 
 from Game.Core import flag
+from Game.Core import save
 
 class Instance:
     __instance = None
     __character_holder = characters.CharacterHolder() 
     class_holder = classes.ClassHolder()
     message_holder = messages.Messages() 
-    screens_holder = visit.VisitedScreenHolder()  
+    __visited_screens_holder = visit.VisitedScreenHolder()  
     config_holder = config.ConfigHolder()
     __flag_holder = flag.FlagHolder()
+    __save_load_manager = save.SaveLoadMananger("save.bin")
 
     @staticmethod
     def get_instance():
@@ -25,6 +27,11 @@ class Instance:
             raise Exception("This class is a singleton!")
         else:
             Instance.__instance = self
+
+    @staticmethod 
+    def debug():
+        print(Instance.__flag_holder)
+        print(Instance.__visited_screens_holder)
 
     @staticmethod
     def add_flag(text):
@@ -51,6 +58,10 @@ class Instance:
         return not Instance.check_if(text)
 
     @staticmethod
+    def set_visited_room(room_id):
+        Instance.__visited_screens_holder.set_visited_screen(room_id)
+
+    @staticmethod
     def add_character_to_party(party_id, character_id):
         Instance.__character_holder.add_character_to_party(party_id, character_id)
 
@@ -74,3 +85,19 @@ class Instance:
     def get_character(character_id):
         return Instance.__character_holder.get_character(character_id)
 
+    @staticmethod
+    def set_save_file(file_name):
+        Instance.__save_load_manager.change_file(file_name)
+
+    @staticmethod
+    def save():
+        t = ("x", Instance.__flag_holder, Instance.__visited_screens_holder)
+        Instance.__save_load_manager.save(t)
+    
+    @staticmethod
+    def load():
+        t = ("x", Instance.__flag_holder, Instance.__visited_screens_holder)
+        t = Instance.__save_load_manager.load(t)
+
+        Instance.__flag_holder = t[1]
+        Instance.__visited_screens_holder = t[2]

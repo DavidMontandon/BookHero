@@ -13,10 +13,22 @@ class VisitedScreenHolder:
         r = self.get_visited_screen(id)
         r._set_visited()
 
+    def __str__(self):
+        s = "Debug - VisitedScreenHolder:"
+
+        for v in self.__visited_screen:
+            s += v + ", "
+
+        return s
+
 class _VisitedScreen:
     def __init__(self, id):
+        self.__id = id 
         self.__items = []
         self.__visitied = False 
+
+    def _get_id(self):
+        return self.__id
 
     def _set_visited(self):        
         self.__visitied = True  

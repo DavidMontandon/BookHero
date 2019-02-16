@@ -1,12 +1,14 @@
 from Game.Util import util 
 from Game.Screens import choice
+from Game.Texts import transform
 
 class Screen:
     def __init__(self):
         self._choices = []
         self._items = []
-        self._random_action_message = True 
         self._desc = ""
+        self._random_action_message = True 
+        self._center_description = True
 
     def __load_xml(self, xml):
         from Game.Core import instance
@@ -27,6 +29,10 @@ class Screen:
                 self.__add_choice(v.text, v.attrib["next"])
             elif (v.tag == "description"):
                 self.__set_desc(v.text)
+
+                if("center" in v.attrib):
+                    self._center_description = util.BooleanFromString.get_boolean(v.attrib["center"])
+
             elif (v.tag == "type"):
                 self.__set_type(v.text)
             elif( v.tag == "randomActionMessage"):
@@ -36,7 +42,7 @@ class Screen:
 
     def print_text(self):
         from Game.Core import instance 
-        util.Console.center(self.get_desc())
+        util.Console.center(transform.Transform.get_transformated_text(self.get_desc()))
         next_screen = ""
 
         if(self.has_random_message()):

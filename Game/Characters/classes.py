@@ -83,5 +83,11 @@ class CharacterClass:
         if name is not None:
             self.__skills[name] = Skill(name, value, dice)
 
+    def get_skill(self, name):
+        try:
+            return self.__skills[name]
+        except KeyError:
+            return None
+
     def get_name(self):
         return self.name

@@ -1,4 +1,5 @@
 import xml.etree.ElementTree as ET
+import os
 from Game.Characters import characters
 from Game.Characters import classes 
 from Game.Util import util 
@@ -6,15 +7,19 @@ from Game.Core import instance
 from Game.Screens import screnloader
 
 class BookHeroText:
-    def __init__(self, game_file):
-        self.__version = "0.0.8"
-        self.__game_file = game_file 
+    def __init__(self, story_path, story_file):
+        self.__version = "0.0.9"
+        self.__game_file = os.path.join(story_path, story_file)
+        self.__save_file = os.path.join(story_path, "save.bin")
+        self.__story_path = story_path
+        self.__story_file = story_file
         self.__engine_running = True
         self.__engine_name = "Python Book Hero Engine"
         self.__engine_author = "David Montandon"
         instance.Instance()
 
     def __engine_start_message(self):
+
         util.Console.clear()
         print("\n\n")
         print("=======================================================================================================================")
@@ -54,16 +59,29 @@ class BookHeroText:
         self.__load_config()
         self.__init_party()
 
+        mem.set_save_file(self.__save_file)
+        
+        from pathlib import Path
+        save_file = Path(self.__save_file)
+        if save_file.exists():
+            mem.load()
+
         self.__cur_room = mem.config_holder.get_config('GameStart')
 
         while(self.__engine_running):
+            self.__this_room = self.__cur_room
             self.__next_room = ""
             room = self.__load_room(self.__cur_room)
 
             self.__screen_print( room )
 
+            if(self.__cur_room=="#Save"):
+                mem.save()
+                self.__cur_room = self.__this_room
+
             if(self.__cur_room=="#Quit"):
                 self.__engine_running = False
+
             elif(self.__cur_room=="#GameOver"):
                 self.__engine_running = False
 
@@ -87,10 +105,10 @@ class BookHeroText:
 
         next_screen = m["next"]
 
-        mem.screens_holder.set_visited_screen(self.__cur_room)
+        mem.set_visited_room(self.__cur_room)
         
         if not m["file"]is None:
-            self.__load_xml_tree(m["file"])
+            self.__load_xml_tree(os.path.join(self.__story_path, m["file"]))
 
         self.__cur_room = next_screen
 

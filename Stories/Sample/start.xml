@@ -10,7 +10,9 @@
 				<choice next="sample1.xml:sample1">Go to sample1 in sample1.xml</choice>
 				<choice next="ClassSelect" ifnot="flag:Class">Class Select </choice>
 				<choice next="ClassChange" if="flag:Class">Change class</choice>
+				<choice next="#Character" if="flag:Class">Character info</choice>
 				<choice next="#GameOver">Exit game</choice>
+				<choice next="#Save">Save Game</choice>
 			</choices>
 			<description>You are the starting point
 No random action message is shown, so what do you want to do?</description>
@@ -18,8 +20,8 @@ No random action message is shown, so what do you want to do?</description>
 		<screen id="ClassSelect" type="ClassSelector" characterId="Hero">
 			<flag>Class</flag>
 			<xpVisit>0</xpVisit>
-			<confirm>You feel more powerful {{Character.Hero.Class.Name}}.</confirm>
-			<description>Choose your class</description>
+			<confirm>You feel more powerful {{Character.Hero.Class.Name}}. Your max HP is {{Character.Hero.Class.Skill.hp}}.</confirm>
+			<description center="false">Choose your class</description>
 			<choices>
 				<choice next="#GameStart">Goto to start</choice>
 				<choice next="GotoA">Goto A</choice>
@@ -54,6 +56,15 @@ No random action message is shown, so what do you want to do?</description>
 				<choice next="GotoA">Goto A</choice>
 			</choices>
 			<description>You are now in B</description>
+		</screen>
+		<screen id="#Character" type="Character">
+			<description center="false">
+				Class : {{Character.Hero.Class.Name}}
+				HP : {{Character.Hero.Class.Skill.hp}}
+				Dexterity : {{Character.Hero.Class.Skill.dex}}
+				Strength : {{Character.Hero.Class.Skill.str}}
+				Wisdom : {{Character.Hero.Class.Skill.wis}}
+			</description>
 		</screen>
 	</screens>
 	<messages>
@@ -127,6 +138,7 @@ No random action message is shown, so what do you want to do?</description>
 		</class>
 	</classes>
 	<configs>
+		<config type="CharacterScreen">#Character</config>
 		<config type="MainParty">Party</config>
 		<config type="MainCharacter">Hero</config>
 		<config type="GameStart">#GameStart</config>

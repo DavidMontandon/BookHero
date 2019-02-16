@@ -13,13 +13,11 @@ class ClassSelectorScreen(screen.Screen):
 
     def load_xml(self, xml):
         from Game.Core import instance
-        mem = instance.Instance.get_instance() 
 
+        mem = instance.Instance.get_instance() 
         screen.Screen._Screen__load_xml(self, xml)
         self._add_default_choices()
-
         self.__set_character_id(xml.attrib["characterId"])
-
 
         for v in xml.iter(): 
             if(v.tag == "confirm"):
@@ -31,6 +29,7 @@ class ClassSelectorScreen(screen.Screen):
                 
         for c in mem.class_holder.get_selectables_classes():
             self.__add_choice_class(c.name, c.id)
+
 
     def __set_character_id(self, character_id):
         self.__character_id = character_id 
@@ -61,7 +60,10 @@ class ClassSelectorScreen(screen.Screen):
         from Game.Core import instance
         mem = instance.Instance.get_instance() 
         selected_class = ""
-        util.Console.center(self.get_desc())
+        if(self._center_description):
+            util.Console.center(self.get_desc())
+        else:
+            print(self.get_desc())
 
         if(self.has_random_class_message()):
             print("")
@@ -79,8 +81,11 @@ class ClassSelectorScreen(screen.Screen):
                 print("Invalid choice.")
 
         mem.set_class(self.__character_id, selected_class)
+
+        util.Console.clear()
         print("\n=======================================================================================================================\n")
-        util.Console.center( transform.Transform.get_transformated_text(self.__confirm ))
+        confirm_text = transform.Transform.get_transformated_text(self.__confirm)
+        util.Console.center(confirm_text)
         print("\n=======================================================================================================================\n")
 
         for c in self.get_choices():
