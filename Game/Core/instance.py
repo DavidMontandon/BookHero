@@ -12,9 +12,13 @@ class Instance:
     class_holder = classes.ClassHolder()
     message_holder = messages.Messages() 
     __visited_screens_holder = visit.VisitedScreenHolder()  
-    config_holder = config.ConfigHolder()
+    __config_holder = config.ConfigHolder()
     __flag_holder = flag.FlagHolder()
     __save_load_manager = save.SaveLoadMananger("save.bin")
+    __cur_screen = ""
+    __cur_screen_file = ""
+
+#INSTANCE
 
     @staticmethod
     def get_instance():
@@ -29,9 +33,37 @@ class Instance:
             Instance.__instance = self
 
     @staticmethod 
-    def debug():
-        print(Instance.__flag_holder)
-        print(Instance.__visited_screens_holder)
+    def __str__():
+        return "==== Instance Debug ====\nThis Screen : {0}:{1}\n{2}\n{3}".format(
+                Instance.get_cur_screen_file(), Instance.get_cur_screen(), Instance.__flag_holder,Instance.__visited_screens_holder)
+
+    @staticmethod
+    def set_cur_screen(id):
+        Instance.__cur_screen = id
+
+    @staticmethod
+    def get_cur_screen():
+        return Instance.__cur_screen
+
+    @staticmethod
+    def set_cur_screen_file(file_name):
+        Instance.__cur_screen_file = file_name
+
+    @staticmethod
+    def get_cur_screen_file():
+        return Instance.__cur_screen_file
+
+#CONFIG HOLDER
+    
+    @staticmethod
+    def get_config(key):
+        return Instance.__config_holder.get_config(key)
+
+    @staticmethod
+    def init_config(xml):
+        return Instance.__config_holder.init_from_xml(xml)
+
+#FLAG HOLDER
 
     @staticmethod
     def add_flag(text):
@@ -57,9 +89,13 @@ class Instance:
     def check_if_not(text):
         return not Instance.check_if(text)
 
+#VISITED SCREEN HOLDER
+
     @staticmethod
     def set_visited_room(room_id):
         Instance.__visited_screens_holder.set_visited_screen(room_id)
+
+#CHARACTER HOLDER
 
     @staticmethod
     def add_character_to_party(party_id, character_id):
@@ -78,12 +114,16 @@ class Instance:
         Instance.__character_holder.set_character_class(character_id, class_id)
 
     @staticmethod
+    def get_character(character_id):
+        return Instance.__character_holder.get_character(character_id)
+
+#CLASS HOLDER
+
+    @staticmethod
     def get_class(class_id):
         return Instance.class_holder.get_class(class_id)
 
-    @staticmethod
-    def get_character(character_id):
-        return Instance.__character_holder.get_character(character_id)
+#SAVE LOAD MANAGER
 
     @staticmethod
     def set_save_file(file_name):
@@ -91,13 +131,16 @@ class Instance:
 
     @staticmethod
     def save():
-        t = ("x", Instance.__flag_holder, Instance.__visited_screens_holder)
+        t = (Instance.get_cur_screen(), Instance.get_cur_screen_file(), Instance.__flag_holder, Instance.__visited_screens_holder)
         Instance.__save_load_manager.save(t)
     
     @staticmethod
     def load():
-        t = ("x", Instance.__flag_holder, Instance.__visited_screens_holder)
+        t = ("", "", Instance.__flag_holder, Instance.__visited_screens_holder)
         t = Instance.__save_load_manager.load(t)
 
-        Instance.__flag_holder = t[1]
-        Instance.__visited_screens_holder = t[2]
+        Instance.set_cur_screen(t[0])
+        Instance.set_cur_screen_file(t[1])
+        #Instance.set_cur_screen_file("sample1.xml")
+        Instance.__flag_holder = t[2]
+        Instance.__visited_screens_holder = t[3]

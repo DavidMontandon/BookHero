@@ -8,15 +8,14 @@ from Game.Screens import screnloader
 
 class BookHeroText:
     def __init__(self, story_path, story_file):
-        self.__version = "0.0.9"
-        self.__game_file = os.path.join(story_path, story_file)
-        self.__save_file = os.path.join(story_path, "save.bin")
+        instance.Instance()
+        self.__version = "0.0.10"
         self.__story_path = story_path
-        self.__story_file = story_file
+        self.__set_cur_game_file(story_file)
+        self.__save_file = os.path.join(story_path, "save.bin")
         self.__engine_running = True
         self.__engine_name = "Python Book Hero Engine"
         self.__engine_author = "David Montandon"
-        instance.Instance()
 
     def __engine_start_message(self):
 
@@ -40,12 +39,13 @@ class BookHeroText:
         print("For more informations, please visit : https://github.com/DavidMontandon/BookHero")
         print("\n")
 
-    def __load_xml_tree(self, file=None):
-                
-        if(file == None):
-            file = self.__game_file
+    def __set_cur_game_file(self, file):
+        mem = instance.Instance.get_instance()
+        mem.set_cur_screen_file(file)
+        self.__game_file = os.path.join(self.__story_path, file)
 
-        with open(file, "r") as xml_file:
+    def __load_xml_tree(self):
+        with open(self.__game_file, "r") as xml_file:
             self.tree = ET.parse(xml_file)
         
         self.root = self.tree.getroot()
@@ -60,38 +60,39 @@ class BookHeroText:
         self.__init_party()
 
         mem.set_save_file(self.__save_file)
-        
+        mem.set_cur_screen(mem.get_config('GameStart'))
+
         from pathlib import Path
         save_file = Path(self.__save_file)
         if save_file.exists():
             mem.load()
-
-        self.__cur_room = mem.config_holder.get_config('GameStart')
+            self.__set_cur_game_file(mem.get_cur_screen_file())
+            self.__load_xml_tree() 
 
         while(self.__engine_running):
-            self.__this_room = self.__cur_room
+            self.__this_room = mem.get_cur_screen()
             self.__next_room = ""
-            room = self.__load_room(self.__cur_room)
+            room = self.__load_room(mem.get_cur_screen())
 
             self.__screen_print( room )
 
-            if(self.__cur_room=="#Save"):
+            cur_room = mem.get_cur_screen()
+
+            if(cur_room=="#Save"):
+                mem.set_cur_screen(self.__this_room)
                 mem.save()
-                self.__cur_room = self.__this_room
-
-            if(self.__cur_room=="#Quit"):
+            elif(cur_room=="#Quit"):
                 self.__engine_running = False
-
-            elif(self.__cur_room=="#GameOver"):
+            elif(cur_room=="#GameOver"):
                 self.__engine_running = False
 
         self.__engine_stop_message() 
 
     def __init_party(self):
         mem = instance.Instance.get_instance()
-        mem.add_party( mem.config_holder.get_config("MainParty") )
-        mem.add_character( mem.config_holder.get_config("MainCharacter") )
-        mem.add_character_to_party( mem.config_holder.get_config("MainParty"), mem.config_holder.get_config("MainCharacter") )
+        mem.add_party( mem.get_config("MainParty") )
+        mem.add_character( mem.get_config("MainCharacter") )
+        mem.add_character_to_party( mem.get_config("MainParty"), mem.get_config("MainCharacter") )
 
     def __screen_print(self, load_screen):
         mem = instance.Instance.get_instance() 
@@ -105,16 +106,17 @@ class BookHeroText:
 
         next_screen = m["next"]
 
-        mem.set_visited_room(self.__cur_room)
+        mem.set_visited_room(mem.get_cur_screen())
         
         if not m["file"]is None:
-            self.__load_xml_tree(os.path.join(self.__story_path, m["file"]))
+            self.__set_cur_game_file(m["file"])
+            self.__load_xml_tree()
 
-        self.__cur_room = next_screen
+        mem.set_cur_screen(next_screen)
 
     def __load_config(self):
         mem = instance.Instance.get_instance()
-        mem.config_holder.init_from_xml(self.root.findall("./configs/config"))
+        mem.init_config(self.root.findall("./configs/config"))
 
     def __load_classes(self):
         mem = instance.Instance.get_instance()

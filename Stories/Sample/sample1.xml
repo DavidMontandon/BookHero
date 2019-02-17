@@ -3,8 +3,9 @@
 	<screens>
 		<screen id="sample1" type="StoryBoard">
 			<choices>
-				<choice next="start.xml:#GameStart">Goto to start in sample.xml</choice>
+				<choice next="start.xml:#GameStart">Goto to start in start.xml</choice>
 				<choice next="sample2">Goto to sample2 in this file</choice>
+				<choice next="#Save">Save Game</choice>
 			</choices>
 			<description>You are now in a new XML file</description>
 		</screen>
@@ -12,7 +13,7 @@
 			<choices>
 				<choice next="sample1">Goto to sample1 in this file</choice>
 			</choices>
-			<description>You are now in a new XML file</description>
+			<description>You are now in a new XML file and a new screen</description>
 		</screen>
 	</screens>
 </story>
