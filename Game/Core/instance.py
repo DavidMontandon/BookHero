@@ -34,8 +34,8 @@ class Instance:
 
     @staticmethod 
     def __str__():
-        return "==== Instance Debug ====\nThis Screen : {0}:{1}\n{2}\n{3}".format(
-                Instance.get_cur_screen_file(), Instance.get_cur_screen(), Instance.__flag_holder,Instance.__visited_screens_holder)
+        return "==== Instance Debug ====\nThis Screen : {file}:{screen}\n{flag}\n{visited}".format(
+                file=Instance.get_cur_screen_file(), screen=Instance.get_cur_screen(), flag=Instance.__flag_holder,visited=Instance.__visited_screens_holder)
 
     @staticmethod
     def set_cur_screen(id):

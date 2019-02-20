@@ -137,7 +137,17 @@ No random action message is shown, so what do you want to do?</description>
 			</initialize>
 		</class>
 	</classes>
+	<items>
+		<item id="gold">
+			<value>1</value>
+		</item>
+		<item id="woodensword">
+			<name>A broken wooden sword</name>
+			<value>1</value>
+		</item>
+	</items>
 	<configs>
+		<config type="Money">gold</config>
 		<config type="CharacterScreen">#Character</config>
 		<config type="MainParty">Party</config>
 		<config type="MainCharacter">Hero</config>

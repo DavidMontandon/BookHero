@@ -6,38 +6,24 @@ from Game.Util import util
 from Game.Core import instance
 from Game.Screens import screnloader
 
-class BookHeroText:
+class CoreEngine:
     def __init__(self, story_path, story_file):
         instance.Instance()
-        self.__version = "0.0.10"
+        self.__version = "0.1.0"
         self.__story_path = story_path
         self.__set_cur_game_file(story_file)
         self.__save_file = os.path.join(story_path, "save.bin")
         self.__engine_running = True
-        self.__engine_name = "Python Book Hero Engine"
+        self.__engine_name = "Python Hero Book Core"
         self.__engine_author = "David Montandon"
+        self.__active_room = None
 
-    def __engine_start_message(self):
-
-        util.Console.clear()
-        print("\n\n")
-        print("=======================================================================================================================")
-        print(self.__engine_name ,  self.__version , "by" , self.__engine_author , "- STARTED")
-        if(self.__game_file=="sample.xml"):
-            print("\nYou can also run you own StoryFile using the command line : python bookhero.py yourworld.xml")
-        print("=======================================================================================================================\n\n")
-        print("For more informations, please visit : https://github.com/DavidMontandon/BookHero")
-        print("\n")
-        input("Press Enter to continue...")
-
-    def __engine_stop_message(self):
-        util.Console.clear()
-        print("\n\n")
-        print("=======================================================================================================================")
-        print(self.__engine_name ,  self.__version , "by" , self.__engine_author , "- STOPPED")
-        print("=======================================================================================================================\n\n")
-        print("For more informations, please visit : https://github.com/DavidMontandon/BookHero")
-        print("\n")
+    def get_engine_info(self):
+        engine_info = {}
+        engine_info["name"] = self.__engine_name
+        engine_info["version"] = self.__version
+        engine_info["author"] = self.__engine_author
+        return engine_info
 
     def __set_cur_game_file(self, file):
         mem = instance.Instance.get_instance()
@@ -50,9 +36,9 @@ class BookHeroText:
         
         self.root = self.tree.getroot()
 
-    def engine_start(self):
+
+    def init_game(self):
         mem = instance.Instance.get_instance()
-        self.__engine_start_message() 
         self.__load_xml_tree() 
         self.__load_messages()
         self.__load_classes()
@@ -62,12 +48,66 @@ class BookHeroText:
         mem.set_save_file(self.__save_file)
         mem.set_cur_screen(mem.get_config('GameStart'))
 
+    def has_save_file(self):
         from pathlib import Path
         save_file = Path(self.__save_file)
         if save_file.exists():
+            return True
+
+        return False
+
+    def load_game(self):
+        if self.has_save_file():
+            mem = instance.Instance.get_instance()
             mem.load()
             self.__set_cur_game_file(mem.get_cur_screen_file())
             self.__load_xml_tree() 
+
+
+    def set_choice(self, m):
+        r = {}
+        r["continue"] = True 
+        r["msg"] = ""
+
+        mem = instance.Instance.get_instance()
+        next_screen = m["next"]
+
+        if(next_screen=="#Save"):
+                mem.save()
+                r["msg"] = "Game saved" 
+        elif(next_screen=="#Quit"):
+                r["continue"] = False 
+                r["msg"] = "You left the game" 
+        elif(next_screen=="#GameOver"):
+                r["continue"] = False 
+                r["msg"] = "You are dead."
+        else:
+
+            if(m["type"] == "move"):
+                mem.set_visited_room(mem.get_cur_screen())
+                mem.set_cur_screen(next_screen)
+                
+                if not m["file"]is None:
+                    self.__set_cur_game_file(m["file"])
+                    self.__load_xml_tree()
+            elif(m["type"] == "classselector"):
+                self.__active_room.set_class(m["next"])
+                r["msg"] = "Class changed"
+
+        return r
+
+    def get_screen(self):
+        mem = instance.Instance.get_instance()
+        if(self.__active_room == None or mem.get_cur_screen() != self.__active_room.get_id()):
+            room = self.__load_room(mem.get_cur_screen())
+            self.__active_room = room
+        else:
+            room = self.__active_room
+        return room.get_datas()
+
+    """
+    def start_game(self):
+        mem = instance.Instance.get_instance()
 
         while(self.__engine_running):
             self.__this_room = mem.get_cur_screen()
@@ -85,8 +125,7 @@ class BookHeroText:
                 self.__engine_running = False
             elif(cur_room=="#GameOver"):
                 self.__engine_running = False
-
-        self.__engine_stop_message() 
+    """
 
     def __init_party(self):
         mem = instance.Instance.get_instance()
@@ -94,6 +133,7 @@ class BookHeroText:
         mem.add_character( mem.get_config("MainCharacter") )
         mem.add_character_to_party( mem.get_config("MainParty"), mem.get_config("MainCharacter") )
 
+    """
     def __screen_print(self, load_screen):
         mem = instance.Instance.get_instance() 
         util.Console.clear()
@@ -113,6 +153,7 @@ class BookHeroText:
             self.__load_xml_tree()
 
         mem.set_cur_screen(next_screen)
+    """
 
     def __load_config(self):
         mem = instance.Instance.get_instance()

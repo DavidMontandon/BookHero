@@ -40,32 +40,22 @@ class Screen:
             elif (v.tag == "flag"):
                 mem.add_flag( v.text )
 
-    def print_text(self):
+    def get_id(self):
+        return self._id
+
+    def get_datas(self):
         from Game.Core import instance 
-        util.Console.center(transform.Transform.get_transformated_text(self.get_desc()))
-        next_screen = ""
+        mem = instance.Instance.get_instance() 
 
+        data = {}
+        data["type"] = "move"
+        data["text"] = []
+        data["text"].append(transform.Transform.get_transformated_text(self.get_desc()))
         if(self.has_random_message()):
-            print("")
-            from Game.Core import instance
-            mem = instance.Instance.get_instance() 
-            util.Console.center(mem.message_holder.getRandomText("actionMove"))
+            data["text"].append(mem.message_holder.getRandomText("actionMove"))
+        data["choices"] = self.get_choices()
 
-        print("\n=======================================================================================================================\n")
-
-        for c in self.get_choices():
-            print(c.code, " : ", c.text)
-
-        print("")
-
-        while(next_screen == ""):
-            choice = str(input("Enter your choice : ")).upper()
-            m = self.check_choice(choice)
-            next_screen = m["next"]
-            if( next_screen == ""):
-                print("Invalid choice.")
-
-        return m 
+        return data
 
     def __add_choice(self, choice_text, choice_next_room):
         self._choices.append(choice.Choice(str(len(self._choices) + 1),choice_text, choice_next_room))

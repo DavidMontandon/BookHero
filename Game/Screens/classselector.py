@@ -10,6 +10,7 @@ class ClassSelectorScreen(screen.Screen):
         self.__confirm = ""
         self.__random_class_message = True 
         self.__character_id = None
+        self.__cur_action = "classselector"
 
     def load_xml(self, xml):
         from Game.Core import instance
@@ -56,50 +57,32 @@ class ClassSelectorScreen(screen.Screen):
                 
         return ""
 
-    def print_text(self):
+    def get_datas(self):
+        from Game.Core import instance 
+        mem = instance.Instance.get_instance() 
+
+        if(self.__cur_action == "classselector"):
+            data = {}
+            data["type"] = "classselector"
+            data["text"] = []
+            data["text"].append(transform.Transform.get_transformated_text(self.get_desc()))
+            if(self.has_random_message()):
+                data["text"].append(mem.message_holder.getRandomText("actionSelectClass"))
+            data["choices"] = self.__class_choices
+        else:
+            data = {}
+            data["type"] = "move"
+            data["text"] = []
+            data["text"].append(transform.Transform.get_transformated_text(self.__confirm))
+            if(self.has_random_message()):
+                data["text"].append(mem.message_holder.getRandomText("actionMove"))
+            data["choices"] = self.get_choices()
+
+        return data
+
+    def set_class(self, class_id):
         from Game.Core import instance
         mem = instance.Instance.get_instance() 
-        selected_class = ""
-        if(self._center_description):
-            util.Console.center(self.get_desc())
-        else:
-            print(self.get_desc())
-
-        if(self.has_random_class_message()):
-            print("")
-            util.Console.center(mem.message_holder.getRandomText("actionSelectClass"))
-
-        print("\n=======================================================================================================================\n")
-
-        for c in self.__class_choices:
-            print(c.get_code(), " : ", c.get_text())
-
-        while(selected_class == ""):
-            code = str(input("Enter your choice : ")).upper()
-            selected_class = self.__check_class_choice(code)
-            if( selected_class == ""):
-                print("Invalid choice.")
-
-        mem.set_class(self.__character_id, selected_class)
-
-        util.Console.clear()
-        print("\n=======================================================================================================================\n")
-        confirm_text = transform.Transform.get_transformated_text(self.__confirm)
-        util.Console.center(confirm_text)
-        print("\n=======================================================================================================================\n")
-
-        for c in self.get_choices():
-            print(c.code, " : ", c.text)
-
-        print("")
-
-        next_screen = ""
-        while(next_screen == ""):
-            choice = str(input("Enter your choice : ")).upper()
-            m = self.check_choice(choice)
-            next_screen = m["next"]
-            if( next_screen == ""):
-                print("Invalid choice.")
-
-        return m 
+        mem.set_class(self.__character_id, class_id)
+        self.__cur_action = "move"
 
