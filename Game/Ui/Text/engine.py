@@ -81,7 +81,7 @@ class TextEngine:
         for text in data["text"]:
             util.Console.center(text)
 
-        print("")
+        print("\n")
 
         for c in data["choices"]:
             print(c.code, " : ", c.text)
@@ -119,7 +119,7 @@ class TextEngine:
         engine_info = self.__get_core().get_engine_info()
         print("=======================================================================================================================")
         print("{name} {version} by {author}".format(name=engine_info["name"], version=engine_info["version"], author=engine_info["author"]))
-        print("=======================================================================================================================")
+        print("=======================================================================================================================\n")
 
     def __engine_start_message(self):
         """ Print - Welcome message

@@ -9,7 +9,7 @@ from Game.Screens import screnloader
 class CoreEngine:
     def __init__(self, story_path, story_file):
         instance.Instance()
-        self.__version = "0.1.0"
+        self.__version = "0.1.1"
         self.__story_path = story_path
         self.__set_cur_game_file(story_file)
         self.__save_file = os.path.join(story_path, "save.bin")
@@ -31,18 +31,21 @@ class CoreEngine:
         self.__game_file = os.path.join(self.__story_path, file)
 
     def __load_xml_tree(self):
-        with open(self.__game_file, "r") as xml_file:
-            self.tree = ET.parse(xml_file)
-        
-        self.root = self.tree.getroot()
+        self.root = self.__get_xml_root(self.__game_file)
 
+    def __get_complete_file_path(self, file_name):
+        print(os.path.join(self.__story_path, file_name))
+        return os.path.join(self.__story_path, file_name)
+
+    def __get_xml_root(self, file_name):
+        with open(file_name, "r") as xml_file:
+            tree =  ET.parse(xml_file)
+        return tree.getroot() 
 
     def init_game(self):
         mem = instance.Instance.get_instance()
         self.__load_xml_tree() 
-        self.__load_messages()
-        self.__load_classes()
-        self.__load_config()
+        self.__load_files()
         self.__init_party()
 
         mem.set_save_file(self.__save_file)
@@ -62,7 +65,6 @@ class CoreEngine:
             mem.load()
             self.__set_cur_game_file(mem.get_cur_screen_file())
             self.__load_xml_tree() 
-
 
     def set_choice(self, m):
         r = {}
@@ -105,67 +107,62 @@ class CoreEngine:
             room = self.__active_room
         return room.get_datas()
 
-    """
-    def start_game(self):
-        mem = instance.Instance.get_instance()
-
-        while(self.__engine_running):
-            self.__this_room = mem.get_cur_screen()
-            self.__next_room = ""
-            room = self.__load_room(mem.get_cur_screen())
-
-            self.__screen_print( room )
-
-            cur_room = mem.get_cur_screen()
-
-            if(cur_room=="#Save"):
-                mem.set_cur_screen(self.__this_room)
-                mem.save()
-            elif(cur_room=="#Quit"):
-                self.__engine_running = False
-            elif(cur_room=="#GameOver"):
-                self.__engine_running = False
-    """
-
     def __init_party(self):
         mem = instance.Instance.get_instance()
         mem.add_party( mem.get_config("MainParty") )
         mem.add_character( mem.get_config("MainCharacter") )
         mem.add_character_to_party( mem.get_config("MainParty"), mem.get_config("MainCharacter") )
 
-    """
-    def __screen_print(self, load_screen):
-        mem = instance.Instance.get_instance() 
-        util.Console.clear()
+    def __load_files(self):
+        """ Load game contents inside the instance singleton
 
-        print("=======================================================================================================================")
-        print(self.__engine_name ,  self.__version , "by" , self.__engine_author )
-        print("=======================================================================================================================\n")
+        Parameters
+        ----------
+        None
 
-        m = load_screen.print_text()
+        Returns
+        -------
+        None
+        """ 
+        class_load = False 
+        message_load = False 
+        config_load = False 
 
-        next_screen = m["next"]
+        for f in self.root.findall("./files/file"):
+            for v in f.iter(): 
+                if(v.tag == "file"):
+                    data_type = v.attrib["type"]
+                    if(data_type == "classes"):
+                        class_load = True
+                        self.__load_classes(self.__get_xml_root(self.__get_complete_file_path(v.text)))
+                    elif(data_type == "messages"):
+                        message_load = True
+                        self.__load_messages(self.__get_xml_root(self.__get_complete_file_path(v.text)))
+                    elif(data_type == "configs"):
+                        config_load = True
+                        self.__load_config(self.__get_xml_root(self.__get_complete_file_path(v.text)))
 
-        mem.set_visited_room(mem.get_cur_screen())
-        
-        if not m["file"]is None:
-            self.__set_cur_game_file(m["file"])
-            self.__load_xml_tree()
 
-        mem.set_cur_screen(next_screen)
-    """
+        if(not message_load):
+            self.__load_messages(self.root)
+    
+        if(not class_load):
+            self.__load_classes(self.root)
 
-    def __load_config(self):
+        if(not config_load):
+            self.__load_config(self.root)
+
+    def __load_config(self, root):
         mem = instance.Instance.get_instance()
-        mem.init_config(self.root.findall("./configs/config"))
+        mem.init_config(root.findall("./configs/config"))
 
-    def __load_classes(self):
+    def __load_classes(self, root):
         mem = instance.Instance.get_instance()
-        mem.class_holder.init_from_xml(self.root.findall("./classes/class"))
+        mem.class_holder.init_from_xml(root.findall("./classes/class"))
 
-    def __load_messages(self):
+    def __load_messages(self, root):
         mem = instance.Instance.get_instance()
-        for msg in self.root.findall("./messages/message"):
+        for msg in root.findall("./messages/message"):
             mem.message_holder.add(msg.attrib["type"], msg.text)
 
     def __load_room(self, room_name):

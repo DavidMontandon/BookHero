@@ -154,4 +154,7 @@ No random action message is shown, so what do you want to do?</description>
 		<config type="GameStart">#GameStart</config>
 		<config type="VisitXP">1</config>
 	</configs>
+	<files>
+		<file type="classes">classes.xml</file>
+	</files>
 </story>
