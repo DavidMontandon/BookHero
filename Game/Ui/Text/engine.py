@@ -46,8 +46,8 @@ class TextEngine:
         
         self.__core.init_game() 
         
-        if self.__core.has_save_file():
-            self.__core.load_game()
+        #if self.__core.has_save_file():
+        #    self.__core.load_game()
 
         running = True
 
@@ -82,6 +82,11 @@ class TextEngine:
             util.Console.center(text)
 
         print("\n")
+
+        if(len(data["items"]) > 0):
+            util.Console.center("You found on the floor")
+            for k, v in data["items"].items():
+                util.Console.center("({quantity}) {name}".format(quantity=v["quantity"], name=v["name"]))
 
         for c in data["choices"]:
             print(c.code, " : ", c.text)

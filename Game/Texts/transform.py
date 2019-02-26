@@ -1,3 +1,5 @@
+from Game.Core import instance
+
 class Transform:
     
     @staticmethod
@@ -13,8 +15,12 @@ class Transform:
                 codes = code.split(".")
                 val = ""
 
-                if(codes[0] == "Character"):
+                if(codes[0] == "BR"):
+                    val = "\n\n"
+                elif(codes[0] == "Character"):
                     val = Transform.__get_character_transoformation(codes)
+                elif(codes[0] == "Items"):
+                    val = Transform.__get_items_transoformation(codes)
 
                 text = text.replace("{{" + code + "}}", val)
                 start = text.find( "{{" )
@@ -24,9 +30,17 @@ class Transform:
         return text 
 
     @staticmethod
-    def __get_character_transoformation(codes):
+    def __get_items_transoformation(codes):
+        mem = instance.Instance.get_instance() 
+        cmd = codes[1]
+        if(cmd == "Drop"):
+            items = mem.get_drops(mem.get_cur_screen())
+            return ', '.join(items)
 
-        from Game.Core import instance
+        return ""
+
+    @staticmethod
+    def __get_character_transoformation(codes):
         mem = instance.Instance.get_instance() 
 
         ch = mem.get_character(codes[1])

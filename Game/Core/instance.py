@@ -5,6 +5,7 @@ from Game.Core import config
 from Game.Screens import visit 
 from Game.Core import flag
 from Game.Core import save
+from Game.Inventoy import item
 
 class Instance:
     __instance = None
@@ -15,6 +16,7 @@ class Instance:
     __config_holder = config.ConfigHolder()
     __flag_holder = flag.FlagHolder()
     __save_load_manager = save.SaveLoadMananger("save.bin")
+    __item_loader = None
     __cur_screen = ""
     __cur_screen_file = ""
 
@@ -52,6 +54,18 @@ class Instance:
     @staticmethod
     def get_cur_screen_file():
         return Instance.__cur_screen_file
+
+#ITEM
+    @staticmethod
+    def get_item(item_id):
+        if(Instance.__item_loader == None):
+            return None
+
+        return Instance.__item_loader.get_item(item_id)
+
+    @staticmethod
+    def set_items_file(file_name):
+        Instance.__item_loader = item.ItemLoader(file_name)
 
 #CONFIG HOLDER
     
@@ -92,8 +106,21 @@ class Instance:
 #VISITED SCREEN HOLDER
 
     @staticmethod
-    def set_visited_room(room_id):
-        Instance.__visited_screens_holder.set_visited_screen(room_id)
+    def is_visited(screen_id):
+        return Instance.__visited_screens_holder.is_visited(screen_id)
+
+    @staticmethod
+    def set_visited_screen(screen_id):
+        Instance.__visited_screens_holder.set_visited_screen(screen_id)
+
+    @staticmethod
+    def add_drop(screen_id, item_id, quantity):
+        Instance.__visited_screens_holder.add_item(screen_id, item_id, quantity)
+
+    @staticmethod
+    def get_drops(screen_id):
+        return Instance.__visited_screens_holder.get_items(screen_id)
+
 
 #CHARACTER HOLDER
 
@@ -141,6 +168,5 @@ class Instance:
 
         Instance.set_cur_screen(t[0])
         Instance.set_cur_screen_file(t[1])
-        #Instance.set_cur_screen_file("sample1.xml")
         Instance.__flag_holder = t[2]
         Instance.__visited_screens_holder = t[3]

@@ -14,13 +14,17 @@
 				<choice next="#GameOver">Exit game</choice>
 				<choice next="#Save">Save Game</choice>
 			</choices>
-			<description>You are the starting point
+			<items>
+				<item quantity="100">gold</item>
+				<item>woodensword</item>
+			</items>
+			<description>You are the starting point.
 No random action message is shown, so what do you want to do?</description>
 		</screen>
 		<screen id="ClassSelect" type="ClassSelector" characterId="Hero">
 			<flag>Class</flag>
 			<xpVisit>0</xpVisit>
-			<confirm>You feel more powerful {{Character.Hero.Class.Name}}. Your max HP is {{Character.Hero.Class.Skill.hp}}.</confirm>
+			<confirm>You feel more powerful {{Character.Hero.Class.Name}}.Your max HP is {{Character.Hero.Class.Skill.hp}}.</confirm>
 			<description center="false">Choose your class</description>
 			<choices>
 				<choice next="#GameStart">Goto to start</choice>
@@ -75,77 +79,6 @@ No random action message is shown, so what do you want to do?</description>
 		<message type="actionSelectClass">Who do you want be ?</message>
 		<message type="actionSelectClass">Who are you ?</message>
 	</messages>
-	<classes>
-		<class id="paladin">
-			<name>Paladin</name>
-			<description>Holy warrior</description>
-			<initialize>
-				<hp>
-					<value>100</value>
-				</hp>
-				<dex>
-					<value>40</value>
-					<dice>1D6</dice>
-				</dex>
-				<str>
-					<value>40</value>
-					<dice>2D6</dice>
-				</str>
-				<wis>
-					<value>30</value>
-					<dice>1D6</dice>
-				</wis>
-			</initialize>
-		</class>
-		<class id="pilgrim">
-			<name>Pilgrim</name>
-			<description>A fervent prayer</description>
-			<initialize>
-				<hp>
-					<value>50</value>
-				</hp>
-				<dex>
-					<value>30</value>
-					<dice>1D6</dice>
-				</dex>
-				<str>
-					<value>30</value>
-					<dice>1D6</dice>
-				</str>
-				<wis>
-					<value>60</value>
-					<dice>2D6</dice>
-				</wis>
-			</initialize>
-		</class>
-		<class id="god" selectable="false">
-			<name>God</name>
-			<description>An unselectable powerful class</description>
-			<initialize>
-				<hp>
-					<value>100</value>
-				</hp>
-				<dex>
-					<value>100</value>
-				</dex>
-				<str>
-					<value>100</value>
-				</str>
-				<wis>
-					<value>100</value>
-				</wis>
-			</initialize>
-		</class>
-	</classes>
-	<items>
-		<item id="gold">
-			<value>1</value>
-		</item>
-		<item id="woodensword">
-			<name>A broken wooden sword</name>
-			<value>1</value>
-		</item>
-	</items>
 	<configs>
 		<config type="Money">gold</config>
 		<config type="CharacterScreen">#Character</config>
@@ -156,5 +89,6 @@ No random action message is shown, so what do you want to do?</description>
 	</configs>
 	<files>
 		<file type="classes">classes.xml</file>
+		<file type="items">items.xml</file>
 	</files>
 </story>

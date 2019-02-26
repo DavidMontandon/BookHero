@@ -11,6 +11,7 @@ class ClassSelectorScreen(screen.Screen):
         self.__random_class_message = True 
         self.__character_id = None
         self.__cur_action = "classselector"
+        self._item_droppable = False 
 
     def load_xml(self, xml):
         from Game.Core import instance

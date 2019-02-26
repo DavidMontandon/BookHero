@@ -9,14 +9,14 @@ from Game.Screens import screnloader
 class CoreEngine:
     def __init__(self, story_path, story_file):
         instance.Instance()
-        self.__version = "0.1.1"
+        self.__version = "0.1.2"
         self.__story_path = story_path
         self.__set_cur_game_file(story_file)
         self.__save_file = os.path.join(story_path, "save.bin")
         self.__engine_running = True
         self.__engine_name = "Python Hero Book Core"
         self.__engine_author = "David Montandon"
-        self.__active_room = None
+        self.__active_screen = None
 
     def get_engine_info(self):
         engine_info = {}
@@ -34,7 +34,6 @@ class CoreEngine:
         self.root = self.__get_xml_root(self.__game_file)
 
     def __get_complete_file_path(self, file_name):
-        print(os.path.join(self.__story_path, file_name))
         return os.path.join(self.__story_path, file_name)
 
     def __get_xml_root(self, file_name):
@@ -84,28 +83,27 @@ class CoreEngine:
                 r["continue"] = False 
                 r["msg"] = "You are dead."
         else:
-
             if(m["type"] == "move"):
-                mem.set_visited_room(mem.get_cur_screen())
+                mem.set_visited_screen(mem.get_cur_screen())
                 mem.set_cur_screen(next_screen)
                 
                 if not m["file"]is None:
                     self.__set_cur_game_file(m["file"])
                     self.__load_xml_tree()
             elif(m["type"] == "classselector"):
-                self.__active_room.set_class(m["next"])
+                self.__active_screen.set_class(m["next"])
                 r["msg"] = "Class changed"
 
         return r
 
     def get_screen(self):
         mem = instance.Instance.get_instance()
-        if(self.__active_room == None or mem.get_cur_screen() != self.__active_room.get_id()):
-            room = self.__load_room(mem.get_cur_screen())
-            self.__active_room = room
+        if(self.__active_screen == None or mem.get_cur_screen() != self.__active_screen.get_id()):
+            screen = self.__load_screen(mem.get_cur_screen())
+            self.__active_screen = screen
         else:
-            room = self.__active_room
-        return room.get_datas()
+            screen = self.__active_screen
+        return screen.get_datas()
 
     def __init_party(self):
         mem = instance.Instance.get_instance()
@@ -124,48 +122,113 @@ class CoreEngine:
         -------
         None
         """ 
-        class_load = False 
-        message_load = False 
-        config_load = False 
+        classes_load = False 
+        messages_load = False 
+        configs_load = False 
+        items_load = False 
 
         for f in self.root.findall("./files/file"):
             for v in f.iter(): 
                 if(v.tag == "file"):
                     data_type = v.attrib["type"]
                     if(data_type == "classes"):
-                        class_load = True
+                        classes_load = True
                         self.__load_classes(self.__get_xml_root(self.__get_complete_file_path(v.text)))
                     elif(data_type == "messages"):
-                        message_load = True
+                        messages_load = True
                         self.__load_messages(self.__get_xml_root(self.__get_complete_file_path(v.text)))
                     elif(data_type == "configs"):
-                        config_load = True
+                        configs_load = True
                         self.__load_config(self.__get_xml_root(self.__get_complete_file_path(v.text)))
+                    elif(data_type == "items"):
+                        self.__load_item_config(self.__get_complete_file_path(v.text))
+                        items_load = True
 
+        if(not items_load):
+            self.__load_item_config( self.__game_file)
 
-        if(not message_load):
-            self.__load_messages(self.root)
-    
-        if(not class_load):
+        if(not classes_load):
             self.__load_classes(self.root)
 
-        if(not config_load):
+        if(not messages_load):
+            self.__load_messages(self.root)
+    
+        if(not configs_load):
             self.__load_config(self.root)
 
+    def __load_item_config(self, file_name):
+        mem = instance.Instance.get_instance()
+        mem.set_items_file(file_name)
+
     def __load_config(self, root):
+        """ Load game confing inside instance
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+        """ 
         mem = instance.Instance.get_instance()
         mem.init_config(root.findall("./configs/config"))
 
+    def __load_items(self, item_id):
+        """ Load items 
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+        """ 
+        item_xml = self.root.find("./items/item[@id='" + item_id + "']")
+        s = screnloader.ScreenLoader.load_from_xml(item_xml)       
+        return s
+
     def __load_classes(self, root):
+        """ Load classes inside instance
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+        """ 
         mem = instance.Instance.get_instance()
         mem.class_holder.init_from_xml(root.findall("./classes/class"))
 
     def __load_messages(self, root):
+        """ Load random messages inside instance
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+        """ 
         mem = instance.Instance.get_instance()
         for msg in root.findall("./messages/message"):
             mem.message_holder.add(msg.attrib["type"], msg.text)
 
-    def __load_room(self, room_name):
-        room_xml = self.root.find("./screens/screen[@id='" + room_name + "']")
-        s = screnloader.ScreenLoader.load_from_xml(room_xml)       
+    def __load_screen(self, screen_name):
+        """ Load selected screen
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+        """ 
+        screen_xml = self.root.find("./screens/screen[@id='" + screen_name + "']")
+        s = screnloader.ScreenLoader.load_from_xml(screen_xml)       
         return s

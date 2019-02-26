@@ -1,6 +1,7 @@
 from Game.Util import util 
 from Game.Screens import choice
 from Game.Texts import transform
+from Game.Screens import visit
 
 class Screen:
     def __init__(self):
@@ -9,12 +10,15 @@ class Screen:
         self._desc = ""
         self._random_action_message = True 
         self._center_description = True
+        self._item_droppable = True 
+        self._is_visited = False
 
     def __load_xml(self, xml):
         from Game.Core import instance
         mem = instance.Instance.get_instance() 
 
         self._id = xml.attrib["id"]
+        self._is_visited = mem.is_visited(self._id)
 
         for v in xml.iter(): 
             if(v.tag == "choice"):
@@ -39,6 +43,16 @@ class Screen:
                 self._random_action_message = util.BooleanFromString.get_boolean(v.text)
             elif (v.tag == "flag"):
                 mem.add_flag( v.text )
+            elif (v.tag == "item" and  self._is_visited == False):                
+                if("quantity" in v.attrib):
+                    q = v.attrib["quantity"]
+                else:
+                    q = 1
+
+                mem.add_drop(self._id, v.text, q)
+
+    def is_item_droppable(self):
+        return self._item_droppable
 
     def get_id(self):
         return self._id
@@ -54,6 +68,7 @@ class Screen:
         if(self.has_random_message()):
             data["text"].append(mem.message_holder.getRandomText("actionMove"))
         data["choices"] = self.get_choices()
+        data["items"] = mem.get_drops(self._id)
 
         return data
 
